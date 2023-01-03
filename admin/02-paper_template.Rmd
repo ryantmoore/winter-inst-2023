@@ -1,0 +1,112 @@
+---
+title: "Your Title Here"
+author: 
+  - Your Name1^[American University]
+  - Your Name2^[American University]
+date: "2022-11-28"
+abstract: "This is our informative abstract of fewer than 200 words. It describes what we investigate, how we investigate it, and what we find."
+output: 
+  pdf_document:
+    number_sections: true
+bibliography: main.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE, message=FALSE}
+# This chunk might read our data.
+# It might clean the data, create new variables, etc.
+# Now our data are ready for our paper.
+
+# Because echo=FALSE, this chunk itself is not shown.
+# Because message=FALSE, any R messages from this chunk do not appear in our paper.
+
+data("cars")
+```
+
+```{r eval=FALSE, echo=FALSE}
+# Because eval=FALSE, this chunk is not run.
+
+df <- read.csv()
+```
+
+
+# Introduction
+
+In this section, we introduce the reader to the phenomenon we investigate. We describe the way in which our analysis contributes to an important intellectual debate, or how it answers a pressing political or social question. We introduce our hypotheses, data, and results. We signpost for the reader what's coming in the rest of the paper.
+
+We remember that our paper is not a mystery novel. We note our core results early and often.
+
+Throughout our paper, we use active, first-person language and avoid the passive voice. For example, we write "we examine the relationship between $X$ and $Y$"; we do not write "the relationship between $X$ and $Y$ was examined." Where we do the analysis, we speak about it transparently.
+
+
+
+
+# [Our Substance and Context Section Title Here]
+
+Here we go deeper into the intellectual debate, the political and social context of our investigation. To give the reader a clear sense of why we are writing this paper, we describe the relevant scholarly, technical, or popular literature. We give this section a meaningful _substantive_ title; it is not entitled "Literature Review", for example. We cite at least three published, peer-reviewed scholarly works. For example, we could cite @mooree20 or @moorav12, which we discussed in class.^[To cite a paper within parentheses, use, e.g., [@moore12].] We only cite others' work in our paper when it enhances the reader's understanding of what we, the authors of this paper, are doing.  We connect everything we cite to _our_ investigation; this is our original research, not a book report or an annotated bibliography.
+
+In order to integrate citations into the References section below, we add entries into our file `main.bib`. This is a plain-text file that we edit in RStudio. We store `main.bib` in the same folder as our paper's `.Rmd` and `.pdf` files. Its entries are formatted so that they can be knit to `.pdf`; see [https://j.mp/2UzTXEZ](https://www.overleaf.com/learn/latex/Bibliography_management_with_bibtex#The_bibliography_file) for example entries for articles, books, and miscellaneous. We can get these entries automatically from Google Scholar by turning on BibTeX in the Google Scholar Settings - Bibliography Manager. Perhaps we use a tool like free, open-source BibDesk to help us manage the `.bib` file.
+
+
+# Data and Methods
+\label{section:data}
+
+This section describes the data we analyze. We describe the source of the data, and its primary features. We cite our data. We describe the methods we use to answer our question and to test our hypotheses.
+
+If our data were `cars`, loaded in a chunk above, we could note that our data have `r nrow(cars)` observations.
+
+We refer to concepts and label them appropriately. However, we almost never refer to specific variable, object, function, or data frame names (such as `var_x`, `ourdata`, `this_useful_func`, or `df`). These particular names are almost never of interest or use to the reader.
+
+We cite the software we use. For example, we conduct our analysis using R version `r paste(R.version$major, R.version$minor, sep = ".")` [@rcoreteam22]. We rely on several elements of the `tidyverse` [@wickhamtidyverse].
+
+# [Our Results Section Title Here]
+
+Here, we explain and interpret our results. We try to learn as much as we can about our question as possible, given the data and analysis. We present our results clearly. We interpret them for the reader with precision and circumspection. We avoid making claims that are not substantiated by our data.
+
+Note that this section may be integrated into Section \ref{section:data}, if joining the two improves the overall presentation.
+
+Our results for the `cars` data include estimating the linear model 
+
+$$\text{Distance}_i = \beta_0 + \beta_1 (\text{Speed}_i) + \epsilon_i.$$
+
+```{r echo=FALSE}
+# Estimate a linear model:
+lm_out <- lm(dist ~ speed, data = cars)
+# Extract the coefficient on speed:
+cars_speed_coef <- coef(lm_out)["speed"]
+```
+
+Below we show the model estimates. The first table uses `xtable()`, the second uses `stargazer()` [@hlavac18].
+
+```{r echo=FALSE, message=FALSE, results='asis'}
+# We can print regression tables with xtable or stargazer:
+regr_table <- xtable::xtable(lm_out,
+                             digits = 2,
+                             caption = "Our Informative Caption")
+
+print(regr_table, comment = FALSE)
+```
+
+```{r echo=FALSE, message=FALSE, results='asis'}
+# We can print regression tables with xtable or stargazer:
+stargazer::stargazer(lm_out, 
+                     title = "Our Informative Title",
+                     dep.var.caption = "Outcome",
+                     digits = 2,
+                     header = FALSE)
+```
+
+Using the `cars` data, we find that each unit of speed is associated with `r round(cars_speed_coef, 1)` more units of distance. We draw out what this really means, and what it implies. For example, if a typical difference among our observations is 7 units of speed, then our model estimates that a typical difference in distance among our observations is $7 \times `r round(cars_speed_coef, 1)` = `r 7 * round(cars_speed_coef, 1)`$ units of distance. We describe the substantive relevance of this number.
+
+# Discussion
+
+We remind the reader what this paper was about, why it was important, and what we found. We reflect on limitations of the data or methods. If we have specific advice for someone picking up where we leave off, we provide that guidance. We avoid making trite statements like "more research should be done".
+
+# References 
+
+
+
+
