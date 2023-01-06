@@ -1,6 +1,6 @@
-In order to view notes that are `.html` files, such as [these](), open a local version of the file in a browser.
+In order to view notes that are `.html` files, such as [these](https://github.com/ryantmoore/winter-inst-2023/blob/main/notes/03/01-intro-python.html), open a local version of the file in a browser.
 
-If you don't have a local copy, from here, 
+If you don't have a local copy, you can get one directly from here. To do so,
 
 * click the file name
 * click the Download button for that file (at right)
