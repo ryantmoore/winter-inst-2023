@@ -1,7 +1,7 @@
 library(dplyr)
 library(tidyr)
 library(ggplot2)
-library(maps)
+require(mapproj)
 
 # Election data from NYTimes
 election <- read.csv("election-data.csv", header = TRUE)
@@ -27,23 +27,30 @@ states_map$state <- toupper(states_map$region)
 election_map <- left_join(states_map, margin_dat, by = c("state" = "State"))
 election_map$state_abb <- state.abb[match(election_map$state,toupper(state.name))]
 
+
 # State abbreviations to centroids
-snames <- aggregate(cbind(long, lat) ~ state_abb, data=election_map, FUN=function(x)mean(range(x)))
+snames <- aggregate(cbind(long, lat) ~ state_abb, data=election_map, FUN=function(x) median(range(x)))
+snames$long_nudge <- 0
+snames$long_nudge[snames$state_abb == "ID"] <- -1.5
+snames$long_nudge[snames$state_abb == "MI"] <- 1.5
+snames$long_nudge[snames$state_abb == "FL"] <- 2.5
+snames$long_nudge[snames$state_abb %in% c("KY","NC","VA") ] <- 1
 
 # Plot
 p <- ggplot(data=election_map, aes(x=long, y=lat, group=state)) + 
-  geom_polygon(aes(fill=Winner), color = "white") + 
-  geom_text(data=snames, aes(label=state_abb, group=state_abb), color = "white") +
+  geom_polygon(aes(fill=Winner), color = "grey50") + 
+  geom_text(data=snames, aes(label=state_abb, group=state_abb), color = "white", 
+            nudge_x = snames$long_nudge) +
   scale_fill_manual(values = c("#1405BD", "#DE0100")) +
   ggtitle('2020 Presidential Election Map') + 
   coord_fixed(1.3) + 
   theme_bw() +
   theme(axis.title.x=element_blank(), 
-        axis.text.x=element_blank(), 
-        axis.ticks.x=element_blank(),
-        axis.title.y=element_blank(), 
-        axis.text.y=element_blank(), 
-        axis.ticks.y=element_blank(),
+        #axis.text.x=element_blank(), 
+        #axis.ticks.x=element_blank(),
+        #axis.title.y=element_blank(), 
+        #axis.text.y=element_blank(), 
+        #axis.ticks.y=element_blank(),
         legend.position = "none")
  
 ggsave("election-map-2020.png", p, width=10.5, height = 8.5)
